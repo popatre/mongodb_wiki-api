@@ -5,6 +5,7 @@ const {
     deleteArticles,
     getSingleArticle,
     replaceArticle,
+    patchArticle,
 } = require("../controller/articles-controller");
 const articlesRouter = express.Router();
 
@@ -17,6 +18,7 @@ articlesRouter
 articlesRouter
     .route("/:article_title")
     .get(getSingleArticle)
-    .put(replaceArticle);
+    .put(replaceArticle)
+    .patch(patchArticle);
 
 module.exports = articlesRouter;

@@ -68,3 +68,20 @@ exports.replaceArticle = (req, res, next) => {
         }
     );
 };
+
+exports.patchArticle = (req, res, next) => {
+    const { article_title } = req.params;
+
+    Article.updateOne(
+        { title: article_title },
+        { $set: req.body },
+        { upsert: true },
+        (err) => {
+            if (!err) {
+                res.status(201).send("success on update");
+            } else {
+                res.send("error");
+            }
+        }
+    );
+};
