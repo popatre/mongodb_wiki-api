@@ -1,3 +1,4 @@
+const { red } = require("color-name");
 const { Article } = require("../model/db");
 
 exports.getAllArticles = (req, res, next) => {
@@ -49,4 +50,21 @@ exports.getSingleArticle = (req, res, next) => {
             next(err);
         }
     });
+};
+
+exports.replaceArticle = (req, res, next) => {
+    const { article_title } = req.params;
+
+    Article.replaceOne(
+        { title: article_title },
+        { title: req.body.title, content: req.body.content },
+        { overwrite: true },
+        (err) => {
+            if (!err) {
+                res.status(201).send("successful update");
+            } else {
+                next(err);
+            }
+        }
+    );
 };
