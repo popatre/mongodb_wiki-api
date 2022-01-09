@@ -75,7 +75,7 @@ exports.patchArticle = (req, res, next) => {
     Article.updateOne(
         { title: article_title },
         { $set: req.body },
-        { upsert: true },
+        { upsert: false },
         (err) => {
             if (!err) {
                 res.status(201).send("success on update");
@@ -84,4 +84,16 @@ exports.patchArticle = (req, res, next) => {
             }
         }
     );
+};
+
+exports.deleteOneArticle = (req, res, next) => {
+    const { article_title } = req.params;
+
+    Article.deleteOne({ title: article_title }, (err) => {
+        if (!err) {
+            res.sendStatus(204);
+        } else {
+            res.send(err);
+        }
+    });
 };
