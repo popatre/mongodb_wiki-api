@@ -8,7 +8,6 @@ exports.getAllArticles = (req, res, next) => {
 
 exports.addInfo = (req, res, next) => {
     const { title, content } = req.body;
-    console.log("********");
 
     if (typeof title !== "string" || typeof content !== "string") {
         return Promise.reject(res.status(400).send({ msg: "Bad request" }));

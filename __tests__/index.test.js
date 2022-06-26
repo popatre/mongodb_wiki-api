@@ -27,7 +27,7 @@ describe("GET /api/articles", () => {
                 expect(body.articles).to.have.lengthOf(10);
             });
     });
-    it.only("status 404 - route not found", () => {
+    it("status 404 - route not found", () => {
         return request(app)
             .get("/api/notARoute")
             .expect(404)
@@ -73,6 +73,20 @@ describe("POST /api/articles", () => {
             .expect(400)
             .then(({ body }) => {
                 expect(body.msg).to.eql("Bad request");
+            });
+    });
+});
+
+describe.only("DELETE /api/articles", () => {
+    it("status 204 - deletes all articles", () => {
+        return request(app)
+            .delete("/api/articles")
+            .expect(204)
+            .then(() => {
+                return request(app).get("/api/articles").expect(200);
+            })
+            .then(({ body }) => {
+                expect(body.articles).to.have.lengthOf(0);
             });
     });
 });
