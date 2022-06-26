@@ -5,15 +5,28 @@ const mongoose = require("mongoose");
 const { seed } = require("./seed");
 const { testData } = require("./testData");
 
-before((done) => {
+beforeEach((done) => {
     mongoose.connection.collections.articles.drop(() => {
-        seed(testData);
-        done();
+        seed(testData, done);
+
+        // done();
     });
 });
 
 after(function () {
     mongoose.disconnect();
+});
+
+describe("GET /api/articles", () => {
+    it("status 200 - returns all articles in the db", () => {
+        return request(app)
+            .get("/api/articles")
+            .expect(200)
+            .then(({ body }) => {
+                assert.isArray(body.articles);
+                expect(body.articles).to.have.lengthOf(10);
+            });
+    });
 });
 
 describe("POST /api/articles", () => {
@@ -52,18 +65,6 @@ describe("POST /api/articles", () => {
             .expect(400)
             .then(({ body }) => {
                 expect(body.msg).to.eql("Bad request");
-            });
-    });
-});
-
-describe("GET /api/articles", () => {
-    it("status 200 - returns all articles in the db", () => {
-        return request(app)
-            .get("/api/articles")
-            .expect(200)
-            .then(({ body }) => {
-                assert.isArray(body.articles);
-                expect(body.articles).to.have.lengthOf(10);
             });
     });
 });

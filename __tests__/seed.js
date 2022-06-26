@@ -1,18 +1,18 @@
 const { Mongoose } = require("mongoose");
 const { Article } = require("../model/db");
 
-let done = 0;
-
 exports.seed = (data, done) => {
+    let seedCount = 0;
     data.forEach((datum) => {
         const article = new Article({
             title: datum.title,
             content: datum.content,
         });
         article.save().then(() => {
-            console.count("data seeded");
-            done++;
-            if (done === data.length) {
+            seedCount++;
+            console.log("seed data", seedCount);
+            if (seedCount === data.length) {
+                done();
                 exit();
             }
         });

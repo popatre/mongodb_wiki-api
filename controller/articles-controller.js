@@ -1,18 +1,14 @@
-const { red } = require("color-name");
 const { Article } = require("../model/db");
 
 exports.getAllArticles = (req, res, next) => {
-    Article.find((err, foundArticles) => {
-        if (err) {
-            res.send(err);
-        } else {
-            res.send(foundArticles);
-        }
+    Article.find().then((articles) => {
+        res.status(200).send({ articles });
     });
 };
 
 exports.addInfo = (req, res, next) => {
     const { title, content } = req.body;
+    console.log("********");
 
     if (typeof title !== "string" || typeof content !== "string") {
         return Promise.reject(res.status(400).send({ msg: "Bad request" }));
