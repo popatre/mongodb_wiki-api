@@ -101,4 +101,12 @@ describe.only("GET /api/articles/:article-title", () => {
                 expect(body.article.content).to.eql("they're great");
             });
     });
+    it("status 404 - valid article not found", () => {
+        return request(app)
+            .get("/api/articles/notAnArticle")
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).to.eql("Article not found");
+            });
+    });
 });

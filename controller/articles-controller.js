@@ -44,7 +44,7 @@ exports.getSingleArticle = (req, res, next) => {
             if (foundArticle) {
                 res.status(200).send({ article: foundArticle });
             } else {
-                res.status(404).send("Article not found");
+                res.status(404).send({ msg: "Article not found" });
             }
         } else {
             next(err);
