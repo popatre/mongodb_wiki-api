@@ -77,7 +77,7 @@ describe("POST /api/articles", () => {
     });
 });
 
-describe.only("DELETE /api/articles", () => {
+describe("DELETE /api/articles", () => {
     it("status 204 - deletes all articles", () => {
         return request(app)
             .delete("/api/articles")
@@ -87,6 +87,18 @@ describe.only("DELETE /api/articles", () => {
             })
             .then(({ body }) => {
                 expect(body.articles).to.have.lengthOf(0);
+            });
+    });
+});
+
+describe.only("GET /api/articles/:article-title", () => {
+    it("status 200 - returns articles requested from title", () => {
+        return request(app)
+            .get("/api/articles/cat")
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.article.title).to.eql("cat");
+                expect(body.article.content).to.eql("they're great");
             });
     });
 });

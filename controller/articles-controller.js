@@ -42,7 +42,7 @@ exports.getSingleArticle = (req, res, next) => {
     Article.findOne({ title: article_title }, (err, foundArticle) => {
         if (!err) {
             if (foundArticle) {
-                res.status(200).send(foundArticle);
+                res.status(200).send({ article: foundArticle });
             } else {
                 res.status(404).send("Article not found");
             }
