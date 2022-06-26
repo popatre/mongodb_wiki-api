@@ -14,6 +14,10 @@ exports.getAllArticles = (req, res, next) => {
 exports.addInfo = (req, res, next) => {
     const { title, content } = req.body;
 
+    if (typeof title !== "string" || typeof content !== "string") {
+        return Promise.reject(res.status(400).send({ msg: "Bad request" }));
+    }
+
     const article = new Article({
         title: title,
         content: content,
@@ -21,7 +25,8 @@ exports.addInfo = (req, res, next) => {
     article
         .save()
         .then((postedArticle) => {
-            res.status(201).json(postedArticle);
+            console.log(postedArticle);
+            res.status(201).send({ article: postedArticle });
         })
         .catch(next);
 };
