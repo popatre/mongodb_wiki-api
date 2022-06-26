@@ -91,7 +91,7 @@ describe("DELETE /api/articles", () => {
     });
 });
 
-describe.only("GET /api/articles/:article-title", () => {
+describe("GET /api/articles/:article-title", () => {
     it("status 200 - returns articles requested from title", () => {
         return request(app)
             .get("/api/articles/cat")
@@ -104,6 +104,33 @@ describe.only("GET /api/articles/:article-title", () => {
     it("status 404 - valid article not found", () => {
         return request(app)
             .get("/api/articles/notAnArticle")
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).to.eql("Article not found");
+            });
+    });
+});
+
+describe.only("PUT /api/articles/:article-title", () => {
+    it("status 201 - replaces article by title requested", () => {
+        const newArticle = { title: "cat", content: "this is the new content" };
+        return request(app)
+            .put("/api/articles/cat")
+            .send(newArticle)
+            .expect(201)
+            .then(({ body }) => {
+                expect(body.log.matchedCount).to.eql(1);
+                expect(body.log.modifiedCount).to.eql(1);
+            });
+    });
+    it("status 404 - valid article not found", () => {
+        const newArticle = {
+            title: "notAnArticle",
+            content: "this is the new content",
+        };
+        return request(app)
+            .put("/api/articles/notAnArticle")
+            .send(newArticle)
             .expect(404)
             .then(({ body }) => {
                 expect(body.msg).to.eql("Article not found");

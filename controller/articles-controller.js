@@ -58,15 +58,18 @@ exports.replaceArticle = (req, res, next) => {
     Article.replaceOne(
         { title: article_title },
         { title: req.body.title, content: req.body.content },
-        { overwrite: true },
-        (err) => {
-            if (!err) {
-                res.status(201).send("successful update");
-            } else {
-                next(err);
+        { overwrite: true }
+    )
+        .then((log) => {
+            if (log.matchedCount === 0) {
+                return Promise.reject({
+                    status: 404,
+                    msg: "Article not found",
+                });
             }
-        }
-    );
+            res.status(201).send({ log });
+        })
+        .catch(next);
 };
 
 exports.patchArticle = (req, res, next) => {
