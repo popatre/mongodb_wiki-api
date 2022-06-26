@@ -113,14 +113,17 @@ describe("GET /api/articles/:article-title", () => {
 
 describe.only("PUT /api/articles/:article-title", () => {
     it("status 201 - replaces article by title requested", () => {
-        const newArticle = { title: "cat", content: "this is the new content" };
+        const newArticle = {
+            title: "new cat",
+            content: "this is the new content",
+        };
         return request(app)
             .put("/api/articles/cat")
             .send(newArticle)
             .expect(201)
             .then(({ body }) => {
-                expect(body.log.matchedCount).to.eql(1);
-                expect(body.log.modifiedCount).to.eql(1);
+                expect(body.article.title).to.eql("new cat");
+                expect(body.article.content).to.eql("this is the new content");
             });
     });
     it("status 404 - valid article not found", () => {
@@ -130,6 +133,33 @@ describe.only("PUT /api/articles/:article-title", () => {
         };
         return request(app)
             .put("/api/articles/notAnArticle")
+            .send(newArticle)
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).to.eql("Article not found");
+            });
+    });
+});
+
+describe("PATCH /api/articles/:article-title", () => {
+    it("status 200 - patched article by title requested. returning patched object", () => {
+        const newArticle = { content: "patched content" };
+        return request(app)
+            .patch("/api/articles/cat")
+            .send(newArticle)
+            .expect(200)
+            .then(({ body }) => {
+                expect(body.article.content).to.eql("patched content");
+                expect(body.article.title).to.eql("cat");
+            });
+    });
+    it("status 404 - valid article not found", () => {
+        const newArticle = {
+            title: "notAnArticle",
+            content: "this is the new content",
+        };
+        return request(app)
+            .patch("/api/articles/notAnArticle")
             .send(newArticle)
             .expect(404)
             .then(({ body }) => {

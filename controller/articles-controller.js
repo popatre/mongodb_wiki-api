@@ -67,7 +67,11 @@ exports.replaceArticle = (req, res, next) => {
                     msg: "Article not found",
                 });
             }
-            res.status(201).send({ log });
+
+            return Article.findOne({ title: req.body.title });
+        })
+        .then((article) => {
+            res.status(201).send({ article });
         })
         .catch(next);
 };
@@ -78,15 +82,21 @@ exports.patchArticle = (req, res, next) => {
     Article.updateOne(
         { title: article_title },
         { $set: req.body },
-        { upsert: false },
-        (err) => {
-            if (!err) {
-                res.status(201).send("success on update");
-            } else {
-                res.send("error");
+        { upsert: false }
+    )
+        .then((log) => {
+            if (log.matchedCount === 0) {
+                return Promise.reject({
+                    status: 404,
+                    msg: "Article not found",
+                });
             }
-        }
-    );
+            return Article.findOne({ title: article_title });
+        })
+        .then((article) => {
+            res.status(200).send({ article });
+        })
+        .catch(next);
 };
 
 exports.deleteOneArticle = (req, res, next) => {
