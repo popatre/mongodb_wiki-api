@@ -91,6 +91,12 @@ exports.patchArticle = (req, res, next) => {
                     msg: "Article not found",
                 });
             }
+            if (!log.acknowledged) {
+                return Promise.reject({
+                    status: 400,
+                    msg: "Bad request - title and content are only valid keys",
+                });
+            }
             return Article.findOne({ title: article_title });
         })
         .then((article) => {
@@ -102,11 +108,15 @@ exports.patchArticle = (req, res, next) => {
 exports.deleteOneArticle = (req, res, next) => {
     const { article_title } = req.params;
 
-    Article.deleteOne({ title: article_title }, (err) => {
-        if (!err) {
+    Article.deleteOne({ title: article_title })
+        .then((log) => {
+            if (log.deletedCount === 0) {
+                return Promise.reject({
+                    status: 404,
+                    msg: "Article not found",
+                });
+            }
             res.sendStatus(204);
-        } else {
-            res.send(err);
-        }
-    });
+        })
+        .catch(next);
 };

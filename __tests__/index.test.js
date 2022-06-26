@@ -111,7 +111,7 @@ describe("GET /api/articles/:article-title", () => {
     });
 });
 
-describe.only("PUT /api/articles/:article-title", () => {
+describe("PUT /api/articles/:article-title", () => {
     it("status 201 - replaces article by title requested", () => {
         const newArticle = {
             title: "new cat",
@@ -155,12 +155,47 @@ describe("PATCH /api/articles/:article-title", () => {
     });
     it("status 404 - valid article not found", () => {
         const newArticle = {
-            title: "notAnArticle",
             content: "this is the new content",
         };
         return request(app)
             .patch("/api/articles/notAnArticle")
             .send(newArticle)
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).to.eql("Article not found");
+            });
+    });
+    it("status 400 - non valid keys on the patch request", () => {
+        const newArticle = {
+            notValid: "not valid data",
+        };
+        return request(app)
+            .patch("/api/articles/cat")
+            .send(newArticle)
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).to.eql(
+                    "Bad request - title and content are only valid keys"
+                );
+            });
+    });
+});
+
+describe("DELETE /api/articles/:article-title", () => {
+    it("status 204 - deletes article from article title", () => {
+        return request(app)
+            .delete("/api/articles/cat")
+            .expect(204)
+            .then(() => {
+                return request(app).get("/api/articles").expect(200);
+            })
+            .then(({ body }) => {
+                expect(body.articles).to.have.lengthOf(9);
+            });
+    });
+    it("status 404 - valid article not found", () => {
+        return request(app)
+            .delete("/api/articles/notAnArticle")
             .expect(404)
             .then(({ body }) => {
                 expect(body.msg).to.eql("Article not found");
