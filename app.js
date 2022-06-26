@@ -2,6 +2,7 @@ const express = require("express");
 const { rmSync } = require("fs");
 const app = express();
 const path = require("path");
+const { handleBadRoute } = require("./controller/errors-controller");
 
 app.use(express.json());
 app.use(express.static("public"));
@@ -16,6 +17,9 @@ app.get("/", (req, res, next) => {
 });
 
 app.use("/api", apiRouter);
+
+app.all("*", handleBadRoute);
+
 app.use((err, req, res, next) => {
     res.status(err.status).send({ msg: err.msg });
 });

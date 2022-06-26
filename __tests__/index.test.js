@@ -27,6 +27,14 @@ describe("GET /api/articles", () => {
                 expect(body.articles).to.have.lengthOf(10);
             });
     });
+    it.only("status 404 - route not found", () => {
+        return request(app)
+            .get("/api/notARoute")
+            .expect(404)
+            .then(({ body }) => {
+                expect(body.msg).to.eql("Route not found");
+            });
+    });
 });
 
 describe("POST /api/articles", () => {
