@@ -4,7 +4,9 @@
     "description": "",
     "main": "app.js",
     "scripts": {
-        "test": "NODE_ENV=test mocha '__tests__' --timeout 10000"
+        "test": "NODE_ENV=test mocha '__tests__' --timeout 10000",
+        "start": "node listen.js",
+        "seed": "node db/runSeed.js"
     },
     "keywords": [],
     "author": "",

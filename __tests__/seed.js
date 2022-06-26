@@ -1,4 +1,4 @@
-const { Mongoose } = require("mongoose");
+const mongoose = require("mongoose");
 const { Article } = require("../model/db");
 
 exports.seed = (data, done) => {
@@ -12,7 +12,9 @@ exports.seed = (data, done) => {
             seedCount++;
             console.log("seed data", seedCount);
             if (seedCount === data.length) {
-                done();
+                if (done) {
+                    done();
+                }
                 exit();
             }
         });
@@ -20,5 +22,5 @@ exports.seed = (data, done) => {
 };
 
 function exit() {
-    Mongoose.disconnect();
+    mongoose.disconnect();
 }
